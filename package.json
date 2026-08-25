@@ -2,6 +2,7 @@
   "name": "crystal-run",
   "version": "1.0.0",
   "description": "Crystal Run desktop game",
+  "author": "Matthew Lunn",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
