@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, session } = require("electron");
 const path = require("path");
 
 function createWindow() {
@@ -16,14 +16,15 @@ function createWindow() {
   window.loadFile(path.join(__dirname, "index.html"));
 }
 
-app.whenReady().then(() => {
-  createWindow();
+app.whenReady().then(async () => {
+  await session.defaultSession.clearCache();
 
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
+  const registrations = await session.defaultSession.serviceWorkers.getAllRunning();
+  for (const registration of registrations) {
+    await session.defaultSession.serviceWorkers.stopWorker(registration.versionId);
+  }
+
+  createWindow();
 });
 
 app.on("window-all-closed", () => {
