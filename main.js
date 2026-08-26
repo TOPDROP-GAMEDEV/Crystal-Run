@@ -1,5 +1,11 @@
-const { app, BrowserWindow, session } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
+
+app.disableHardwareAcceleration();
+
+if (require("electron-squirrel-startup")) {
+  app.quit();
+}
 
 function createWindow() {
   const window = new BrowserWindow({
@@ -16,16 +22,7 @@ function createWindow() {
   window.loadFile(path.join(__dirname, "index.html"));
 }
 
-app.whenReady().then(async () => {
-  await session.defaultSession.clearCache();
-
-  const registrations = await session.defaultSession.serviceWorkers.getAllRunning();
-  for (const registration of registrations) {
-    await session.defaultSession.serviceWorkers.stopWorker(registration.versionId);
-  }
-
-  createWindow();
-});
+app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
