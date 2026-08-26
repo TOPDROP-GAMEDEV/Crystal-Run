@@ -116,28 +116,419 @@
   }
 
   /* ---------------- level pass ---------------- */
-  const PASS = [
-    'New title screen colours', 'Extra hero name ideas', 'Bonus example: dice rolls',
-    'Code theme: parchment', 'Cheat sheet download', 'Boss health bar snippet',
-    'Code theme: midnight', 'Bonus example: save files', 'Sound effect ideas',
-    'Extra weapon blueprint', 'Level 3 preview', 'Code theme: arcade',
-    'Bonus example: 2D map', 'Certificate of completion', 'Sandbox mode'
-  ];
+const PASS = [
+  'New title screen colours',
+  'Extra hero name ideas',
+  'Bonus example: dice rolls',
+  'Code theme: parchment',
+  'Java cheat sheet download',
+
+  'Coming soon: boss health bar snippet',
+  'Coming soon: code theme midnight',
+  'Coming soon: bonus example save files',
+  'Coming soon: sound effect ideas',
+  'Coming soon: extra weapon blueprint',
+  'Coming soon: Level 3 preview',
+  'Coming soon: code theme arcade',
+  'Coming soon: bonus example 2D map',
+  'Coming soon: certificate of completion',
+  'Coming soon: sandbox mode'
+];
   function openPass() {
-    const lv = xpLevel(), total = xpTotal();
-    $('passSub').textContent = 'You are Level ' + lv + ' with ' + total + ' XP. Every 10 XP is one level. Examples give ' +
-      XP_EXAMPLE + ' XP, build tasks give ' + XP_BUILD + ' XP.';
-    $('passGrid').innerHTML = PASS.map((name, k) => {
-      const tier = k + 1, need = (tier - 1) * XP_PER_LEVEL, open = lv >= tier;
-      return '<div class="tier' + (open ? ' open' : '') + '">' +
-        '<div class="tn">Level ' + tier + '</div>' +
-        '<div class="tneed">' + (need === 0 ? 'start' : need + ' XP') + '</div>' +
-        '<div class="treward">' + (open ? 'Unlocked' : 'Locked') + '</div>' +
-        '<div class="tslot">' + esc(name) + '<span class="soon">coming soon</span></div>' +
-        '</div>';
-    }).join('');
-    $('passModal').hidden = false;
+    const lv = xpLevel();
+  const total = xpTotal();
+
+  $('passSub').textContent =
+    'You are Level ' + lv + ' with ' + total + ' XP. Every ' +
+    XP_PER_LEVEL + ' XP is one level. Examples give ' +
+    XP_EXAMPLE + ' XP, build tasks give ' + XP_BUILD + ' XP.';
+
+  $('passGrid').innerHTML = PASS.map((name, k) => {
+    const tier = k + 1;
+    const need = (tier - 1) * XP_PER_LEVEL;
+    const open = lv >= tier;
+
+    return '<div class="tier' + (open ? ' open' : '') + '">' +
+      '<div class="tn">Level ' + tier + '</div>' +
+      '<div class="tneed">' + (need === 0 ? 'Start' : need + ' XP') + '</div>' +
+      '<div class="treward">' + (open ? 'Unlocked' : 'Locked') + '</div>' +
+      '<div class="tslot">' +
+        esc(name) +
+        (open
+          ? '<button class="ghost small pass-reward" data-reward="' + k + '">Claim reward</button>'
+          : '<span class="soon">Reach Level ' + tier + '</span>') +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  $('passGrid').querySelectorAll('.pass-reward').forEach(button => {
+    button.onclick = () => {
+      claimPassReward(Number(button.dataset.reward));
+    };
+  });
+
+  $('passModal').hidden = false;
   }
+
+function claimPassReward(index) {
+  if (index === 0) {
+    setStyle('title-colours');
+
+  } else if (index === 1) {
+    alert(
+      'Hero name ideas unlocked!\n\n' +
+      '• Crystal Knight\n' +
+      '• Nova Runner\n' +
+      '• Rune Walker\n' +
+      '• Pixel Mage\n' +
+      '• Echo'
+    );
+
+  } else if (index === 2) {
+  toast(
+    '<strong>Dice Roll example unlocked!</strong>' +
+    '<span>Open Inventory → Bonus rewards to view and copy it.</span>',
+    'big'
+  );
+
+  } else if (index === 3) {
+    } else if (index === 3) {
+  setStyle('parchment');
+
+  } else if (index === 4) {
+  toast(
+    '<strong>Java Cheat Sheet unlocked!</strong>' +
+    '<span>Open Inventory → Bonus rewards to read and copy it.</span>',
+    'big'
+  );
+  }else if (index === 6) {
+  setStyle('midnight');
+
+  } else if (index === 11) {
+  setStyle('arcade');
+  }
+  else {
+    toast(
+      '<strong>Coming soon</strong>' +
+      '<span>This Level Pass reward is planned for a future Crystal Run update.</span>',
+      'big'
+    );
+  }
+}
+
+ 
+function setTheme(theme) {
+  document.body.classList.remove(
+    'theme-parchment',
+    'theme-midnight',
+    'theme-arcade'
+  );
+
+  document.body.classList.add('theme-' + theme);
+
+  store.set('cr.theme', theme);
+
+  toast(
+    '<strong>' + theme.charAt(0).toUpperCase() + theme.slice(1) +
+    ' theme equipped!</strong><span>You can change it again from the Level Pass.</span>',
+    'big'
+  );
+}
+
+/* ---------------- styles ---------------- */
+
+const STYLES = [
+  {
+    id: 'default',
+    name: 'Crystal',
+    description: 'The original Crystal Run blue and violet style.',
+    unlockLevel: 1,
+    colours: ['#05070f', '#5fe3ff', '#9b8cff']
+  },
+  {
+    id: 'title-colours',
+    name: 'Title Colours',
+    description: 'A pink and gold colour palette unlocked at Pass Level 1.',
+    unlockLevel: 1,
+    colours: ['#12071a', '#ff6bb5', '#ffd166']
+  },
+  {
+    id: 'parchment',
+    name: 'Parchment',
+    description: 'A warm fantasy style unlocked at Pass Level 4.',
+    unlockLevel: 4,
+    colours: ['#2e2118', '#ffd166', '#ff9f68']
+  },
+  {
+    id: 'midnight',
+    name: 'Midnight',
+    description: 'A deeper night-time style unlocked at Pass Level 7.',
+    unlockLevel: 7,
+    colours: ['#02030c', '#5fe3ff', '#9b8cff']
+  },
+  {
+    id: 'arcade',
+    name: 'Arcade',
+    description: 'A bright neon arcade style unlocked at Pass Level 12.',
+    unlockLevel: 12,
+    colours: ['#12041d', '#00ffe1', '#ff4fd8']
+  }
+];
+
+function selectedStyle() {
+  return store.get('cr.theme', 'default');
+}
+
+function setStyle(styleId) {
+  const style = STYLES.find(item => item.id === styleId);
+
+  if (!style) return;
+
+  document.body.classList.remove(
+    'theme-title-colours',
+    'theme-parchment',
+    'theme-midnight',
+    'theme-arcade'
+  );
+
+  /* Removes the old Level 1 inline colour override */
+  document.documentElement.style.removeProperty('--cyan');
+  document.documentElement.style.removeProperty('--violet');
+
+  if (styleId !== 'default') {
+    document.body.classList.add('theme-' + styleId);
+  }
+
+  store.set('cr.theme', styleId);
+
+  toast(
+    '<strong>' + esc(style.name) + ' style equipped!</strong>' +
+    '<span>You can change it again from Styles.</span>',
+    'big'
+  );
+
+  renderStyles();
+}
+
+function renderStyles() {
+  const current = selectedStyle();
+  const level = xpLevel();
+
+  $('styleGrid').innerHTML = STYLES.map(style => {
+    const unlocked = level >= style.unlockLevel;
+    const selected = current === style.id;
+
+    return '<div class="style-card' +
+      (unlocked ? ' unlocked' : ' locked') +
+      (selected ? ' selected' : '') +
+      '">' +
+
+      '<div class="style-preview" style="' +
+        '--style-bg:' + style.colours[0] + ';' +
+        '--style-main:' + style.colours[1] + ';' +
+        '--style-accent:' + style.colours[2] + ';' +
+      '">' +
+        '<span></span><span></span><span></span>' +
+      '</div>' +
+
+      '<h3>' + esc(style.name) + '</h3>' +
+      '<p>' + esc(style.description) + '</p>' +
+
+      (unlocked
+        ? '<button class="ghost small style-select" data-style="' + style.id + '">' +
+            (selected ? 'Selected' : 'Use style') +
+          '</button>'
+        : '<span class="style-lock">Unlock at Pass Level ' +
+            style.unlockLevel +
+          '</span>') +
+
+      '</div>';
+  }).join('');
+
+  $('styleGrid').querySelectorAll('.style-select').forEach(button => {
+    button.onclick = () => {
+      setStyle(button.dataset.style);
+    };
+  });
+}
+
+function openStyles() {
+  renderStyles();
+  $('stylesModal').hidden = false;
+}
+
+
+/* ---------------- inventory ---------------- */
+
+let inventoryTab = 'course';
+
+const BONUS_ITEMS = [
+  {
+    id: 'dice',
+    level: 3,
+    name: 'Dice roll example',
+    description: 'A Java example that rolls a number from 1 to 6.',
+    code:
+`public class DiceRoll {
+  public static void main(String[] args) {
+    int roll = (int)(Math.random() * 6) + 1;
+    System.out.println("You rolled: " + roll);
+  }
+}`
+  },
+  {
+    id: 'cheat-sheet',
+    level: 5,
+    name: 'Java cheat sheet',
+    description: 'Quick Java reminders for your next Crystal Run build.',
+    code:
+`PRINT TEXT
+System.out.println("Hello!");
+
+VARIABLES
+int score = 0;
+String playerName = "Alex";
+boolean gameOver = false;
+
+IF STATEMENTS
+if (score >= 10) {
+  System.out.println("Level up!");
+} else {
+  System.out.println("Keep going!");
+}
+
+LOOPS
+for (int i = 0; i < 5; i++) {
+  System.out.println(i);
+}`
+  }
+];
+
+function inventoryCodeCard(title, description, code, status) {
+  return '<article class="inventory-card">' +
+    '<div class="inventory-card-head">' +
+      '<div>' +
+        '<h3>' + esc(title) + '</h3>' +
+        '<p>' + esc(description) + '</p>' +
+      '</div>' +
+      '<span class="inventory-status ' + (status === 'Complete' ? 'complete' : '') + '">' +
+        esc(status) +
+      '</span>' +
+    '</div>' +
+    '<pre class="console inventory-code"><code>' + esc(code) + '</code></pre>' +
+    '<button class="ghost small inventory-copy" data-copy="' +
+      encodeURIComponent(code) +
+    '">Copy code</button>' +
+  '</article>';
+}
+
+function renderInventoryCourse() {
+  const cards = [];
+
+  LEVELS.forEach((level, levelIndex) => {
+    level.sections.forEach((section, sectionIndex) => {
+      const savedBuild = store.get(K.build(levelIndex, sectionIndex), null);
+      const finished = (store.get(K.done(levelIndex), []) || []).indexOf(sectionIndex) >= 0;
+
+      if (!savedBuild && !finished) return;
+
+      const code = savedBuild || section.build.reference;
+      const status = finished ? 'Complete' : 'Saved draft';
+
+      cards.push(
+        inventoryCodeCard(
+          'Level ' + level.id + ' · ' + section.title,
+          section.goal,
+          code,
+          status
+        )
+      );
+    });
+  });
+
+  if (!cards.length) {
+    return '<div class="inventory-empty">' +
+      '<strong>Your inventory is empty.</strong>' +
+      '<span>Write code in a build task and it will appear here automatically.</span>' +
+    '</div>';
+  }
+
+  return '<div class="inventory-list">' + cards.join('') + '</div>';
+}
+
+function renderInventoryBonus() {
+  const playerLevel = xpLevel();
+
+  return '<div class="inventory-list">' + BONUS_ITEMS.map(item => {
+    const unlocked = playerLevel >= item.level;
+
+    if (!unlocked) {
+      return '<article class="inventory-card locked">' +
+        '<div class="inventory-card-head">' +
+          '<div>' +
+            '<h3>' + esc(item.name) + '</h3>' +
+            '<p>' + esc(item.description) + '</p>' +
+          '</div>' +
+          '<span class="inventory-status">Locked</span>' +
+        '</div>' +
+        '<p class="inventory-lock">Unlock at XP Pass Level ' + item.level + '.</p>' +
+      '</article>';
+    }
+
+    return inventoryCodeCard(
+      item.name,
+      item.description,
+      item.code,
+      'Unlocked'
+    );
+  }).join('') + '</div>';
+}
+
+function renderInventory() {
+  const content = $('inventoryContent');
+
+  if (!content) return;
+
+  content.innerHTML = inventoryTab === 'course'
+    ? renderInventoryCourse()
+    : renderInventoryBonus();
+
+  $('inventoryModal').querySelectorAll('.inventory-tab').forEach(button => {
+    const active = button.dataset.invTab === inventoryTab;
+    button.classList.toggle('active', active);
+
+    button.onclick = () => {
+      inventoryTab = button.dataset.invTab;
+      renderInventory();
+    };
+  });
+
+  content.querySelectorAll('.inventory-copy').forEach(button => {
+    button.onclick = () => {
+      const code = decodeURIComponent(button.dataset.copy);
+
+      const copied = () => {
+        toast(
+          '<strong>Code copied!</strong>' +
+          '<span>Paste it into a Java file or editor.</span>',
+          'big'
+        );
+      };
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(copied, copied);
+      } else {
+        copied();
+      }
+    };
+  });
+}
+
+function openInventory() {
+  inventoryTab = 'course';
+  renderInventory();
+  $('inventoryModal').hidden = false;
+}
 
   /* ---- code helpers ---- */
   function exCode(i, j) { return store.get(K.ex(li, i, j), null) || S[i].examples[j].code; }
@@ -695,16 +1086,44 @@
   };
 
   /* ---------------- wiring ---------------- */
-  $('playBtn').onclick = playGame;
-  $('rerunGame').onclick = playGame;
-  $('closeModal').onclick = () => { $('gameModal').hidden = true; };
-  $('gameModal').addEventListener('click', e => { if (e.target === $('gameModal')) $('gameModal').hidden = true; });
   $('passBtn').onclick = openPass;
   $('xpMeter').onclick = openPass;
-  $('closePass').onclick = () => { $('passModal').hidden = true; };
-  $('passModal').addEventListener('click', e => { if (e.target === $('passModal')) $('passModal').hidden = true; });
+  $('closePass').onclick = () => { 
+    $('passModal').hidden = true; 
+  };
+  $('passModal').addEventListener('click', e => { 
+    if (e.target === $('passModal')) {
+      $('passModal').hidden = true; 
+    }
+  });
+
+  /* Styles page buttons */
+  $('stylesBtn').onclick = openStyles;
+
+  $('closeStyles').onclick = () => {
+    $('stylesModal').hidden = true;
+  };
+
+  $('stylesModal').addEventListener('click', e => {
+    if (e.target === $('stylesModal')) {
+      $('stylesModal').hidden = true;
+    }
+  });
+
+  $('inventoryBtn').onclick = openInventory;
+
+  $('closeInventory').onclick = () => {
+    $('inventoryModal').hidden = true;
+  };
+
+  $('inventoryModal').addEventListener('click', e => {
+    if (e.target === $('inventoryModal')) {
+      $('inventoryModal').hidden = true;
+    }
+  });
+
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { $('gameModal').hidden = true; $('passModal').hidden = true; $('saveModal').hidden = true; }
+    if (e.key === 'Escape') { $('gameModal').hidden = true; $('passModal').hidden = true; $('saveModal').hidden = true; $('stylesModal').hidden = true; $('inventoryModal').hidden = true; }
   });
   $('copyGame').onclick = () => {
     const txt = $('gameSrc').textContent;
@@ -745,6 +1164,11 @@
   if (window.TUTOR) {
     TUTOR.init({ context: () => ({ where: whereLabel(), code: currentCode() }) });
     $('primerBtn').onclick = () => { TUTOR.open('ask'); TUTOR.ask('I have never written code before, start here'); };
+  }
+
+  const savedTheme = store.get('cr.theme', '');
+  if (savedTheme) {
+    document.body.classList.add('theme-' + savedTheme);
   }
 
   render();
