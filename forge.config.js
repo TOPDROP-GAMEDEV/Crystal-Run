@@ -9,7 +9,17 @@ module.exports = {
 makers: [
   {
     name: '@electron-forge/maker-squirrel',
-    config: {},
+    config: {
+      name: 'CrystalRun',
+      setupExe: 'CrystalRunSetup.exe',
+      authors: 'Matthew Lunn',
+      description: 'Crystal Run Java learning game'
+    },
+  },
+  {
+    name: '@electron-forge/maker-dmg',
+    platforms: ['darwin'],
+    config: {}
   },
 ],
   plugins: [
