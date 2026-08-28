@@ -1,0 +1,40 @@
+name: Create source ZIP
+
+on:
+  # Runs automatically whenever you push to the main branch.
+  push:
+    branches:
+      - main
+
+  # Lets you run the workflow manually from GitHub Actions.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-source:
+    name: Package Crystal Run source
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create source archive
+        run: |
+          mkdir -p dist
+
+          zip -r dist/crystal-run-source.zip . \
+            -x '.git/*' \
+            -x 'dist/*' \
+            -x 'node_modules/*' \
+            -x '.DS_Store'
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: crystal-run-source
+          path: dist/crystal-run-source.zip
+          if-no-files-found: error
+          retention-days: 30
