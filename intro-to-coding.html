@@ -19,17 +19,129 @@ button,a{font:inherit}button{cursor:pointer}.topbar{position:sticky;top:0;z-inde
 <main class="shell"><section class="hero"><div><p class="eyebrow">Beginner course · no experience needed</p><h1>Introduction to Coding</h1><p>Learn how programmers think before you start writing large programs. This course explains what code is, how computers follow instructions, and the core ideas behind every programming language.</p></div><div class="progress"><strong id="progressTitle">0 of 10 modules complete</strong><p id="progressText">Complete a module to save your progress in this browser.</p><div class="bar"><span id="progressBar"></span></div></div></section><section class="layout"><aside class="side"><h2>Course modules</h2><div id="moduleList"></div><div class="side-note">Each module has a short explanation and an activity. Your completion progress is stored separately from the Java course.</div><button class="reset" id="resetProgress">Reset Intro to Coding progress</button></aside><section class="course"><article class="card" id="lesson"></article></section></section></main>
 <script>
 (function(){
-const modules=[
-{title:'What is coding?',goal:'Explain what code is and why computers need it.',concepts:['code','program','software'],body:'Coding is the process of writing instructions for a computer. A <strong>program</strong> is a collection of those instructions. Apps, websites, games, traffic lights and smart devices all use programs.',activity:'Write instructions for a robot to make toast. Be extremely precise: a computer cannot guess a missing step.'},
-{title:'How computers follow instructions',goal:'Understand why instructions must be clear and ordered.',concepts:['instructions','syntax','program'],body:'Computers are fast, but they do exactly what they are told. Programming languages have rules called <strong>syntax</strong>. A small spelling or punctuation mistake can stop a program from running.',activity:'Ask a friend to follow your robot instructions literally. Notice where unclear instructions cause a problem.'},
-{title:'Computational thinking',goal:'Break big problems into manageable parts.',concepts:['decomposition','patterns','abstraction'],body:'Programmers solve problems by using computational thinking. They break a large problem into smaller pieces, spot repeated patterns, and focus on the important details.',activity:'For a quiz game, list the separate parts you would need: questions, answers, score, feedback, and a result screen.'},
-{title:'Algorithms and pseudocode',goal:'Plan a solution before writing code.',concepts:['algorithm','pseudocode','flowchart'],body:'An <strong>algorithm</strong> is an ordered set of steps for solving a problem. Pseudocode is a simple, language-independent way to describe those steps before you write real code.',code:'START\nAsk the user for their name\nDisplay "Hello " + name\nEND',activity:'Write pseudocode for checking whether someone has remembered their school bag.'},
-{title:'Variables and data',goal:'Understand how a program remembers information.',concepts:['variable','string','number','boolean'],body:'A <strong>variable</strong> is a named place where a program stores information. Programs use different data types, including text, numbers, and true/false values.',code:'name = "Nova"\nscore = 0\nisGameOver = false',activity:'Choose three pieces of information a game needs to remember and give each one a variable name.'},
-{title:'Conditions and decisions',goal:'Use logic to choose between outcomes.',concepts:['if','else','condition','comparison'],body:'A condition asks a true-or-false question. Programs use <strong>if</strong> and <strong>else</strong> to make decisions, such as letting a player continue only when they have health left.',code:'IF score >= 50\n    Display "You passed"\nELSE\n    Display "Try again"\nEND IF',activity:'Design a decision that tells a player to take an umbrella when it is raining.'},
-{title:'Loops and repetition',goal:'Repeat instructions efficiently.',concepts:['loop','repeat','counter'],body:'A <strong>loop</strong> repeats an instruction or group of instructions. Instead of writing the same command five times, a loop can perform it automatically.',code:'FOR number FROM 1 TO 5\n    Display number\nEND FOR',activity:'Where could a game use a loop? Think about counting coins, moving enemies, or showing questions.'},
-{title:'Functions and reusable code',goal:'Organise useful instructions into reusable pieces.',concepts:['function','method','parameter','reuse'],body:'A <strong>function</strong> is a named group of instructions that does one job. Functions avoid repetition and make programs easier to understand and fix.',code:'FUNCTION greetUser(name)\n    Display "Hello " + name\nEND FUNCTION\n\ngreetUser("Alex")',activity:'Name three functions a game might need, such as startGame, showScore, or movePlayer.'},
-{title:'Testing and debugging',goal:'Find and fix mistakes in programs.',concepts:['test','debug','syntax error','logic error'],body:'Testing checks whether a program works as expected. Debugging is the process of finding and fixing errors. A syntax error breaks language rules; a logic error runs but gives the wrong result.',activity:'Imagine a score is meant to increase by 10, but only increases by 1. Is that a syntax error or a logic error? Explain why.'},
-{title:'Final project: Smart Morning Routine',goal:'Use input, decisions, loops and outputs in one algorithm.',concepts:['input','condition','loop','algorithm'],body:'Design a Smart Morning Routine algorithm. It should use an input, at least two decisions, a repeated action, and clear outputs. Test it with different situations.',code:'START\nAsk: What time is it?\nIF time is later than 8:00\n    Display "Get ready quickly"\nELSE\n    Display "You have extra time"\nEND IF\n\nWHILE breakfast is not finished\n    Take another bite\nEND WHILE\n\nAsk: Is it raining?\nIF answer is yes\n    Display "Take an umbrella"\nELSE\n    Display "No umbrella needed"\nEND IF\nEND',activity:'Test your routine for an early morning, a late morning, and a rainy morning.',quiz:true}
+const modules = [
+  {
+    title: 'What is coding?',
+    goal: 'Explain what code is and why computers need it.',
+    concepts: ['code', 'program', 'software'],
+    body: 'Coding is the process of writing instructions for a computer. A <strong>program</strong> is a collection of those instructions. Apps, websites, games, traffic lights and smart devices all use programs.',
+    more: 'Computers do not understand ideas in the same way people do. They need instructions written in a programming language, such as Java, JavaScript, Python, or Scratch. Different languages are designed for different kinds of tasks, but they all help people turn a plan into software that a computer can run. When you code, you are solving a problem by explaining every important step clearly enough for a machine to follow.',
+    activity: 'Write instructions for a robot to make toast. Be extremely precise: a computer cannot guess a missing step.'
+  },
+  {
+    title: 'How computers follow instructions',
+    goal: 'Understand why instructions must be clear and ordered.',
+    concepts: ['instructions', 'syntax', 'program'],
+    body: 'Computers are fast, but they do exactly what they are told. Programming languages have rules called <strong>syntax</strong>. A small spelling or punctuation mistake can stop a program from running.',
+    more: 'A computer normally follows instructions in order, from the beginning of a program to the end. It does not automatically understand what the programmer intended, so clear wording, correct symbols, and a sensible order all matter. For example, a computer cannot display a score before the score has been created. Learning to read instructions carefully is one of the most important habits for a programmer.',
+    activity: 'Ask a friend to follow your robot instructions literally. Notice where unclear instructions cause a problem.'
+  },
+  {
+    title: 'Computational thinking',
+    goal: 'Break big problems into manageable parts.',
+    concepts: ['decomposition', 'patterns', 'abstraction'],
+    body: 'Programmers solve problems by using computational thinking. They break a large problem into smaller pieces, spot repeated patterns, and focus on the important details.',
+    more: 'This approach is useful even before you write any code. Decomposition means splitting a difficult task into smaller jobs, such as creating questions, checking answers, and recording scores in a quiz game. Pattern recognition helps you notice tasks that work in similar ways, while abstraction means ignoring details that are not needed yet. Together, these skills make a large project feel less overwhelming and help programmers plan better solutions.',
+    activity: 'For a quiz game, list the separate parts you would need: questions, answers, score, feedback, and a result screen.'
+  },
+  {
+    title: 'Algorithms and pseudocode',
+    goal: 'Plan a solution before writing code.',
+    concepts: ['algorithm', 'pseudocode', 'flowchart'],
+    body: 'An <strong>algorithm</strong> is an ordered set of steps for solving a problem. Pseudocode is a simple, language-independent way to describe those steps before you write real code.',
+    more: 'Planning with pseudocode helps you focus on the logic of a solution before worrying about the exact spelling rules of a programming language. A good algorithm has a clear start, a clear finish, and steps that happen in an order that makes sense. Flowcharts can also show an algorithm visually by using boxes for actions and diamonds for decisions. If an algorithm is confusing on paper, it will probably be confusing when it becomes code.',
+    code: `START
+Ask the user for their name
+Display "Hello " + name
+END`,
+    activity: 'Write pseudocode for checking whether someone has remembered their school bag.'
+  },
+  {
+    title: 'Variables and data',
+    goal: 'Understand how a program remembers information.',
+    concepts: ['variable', 'string', 'number', 'boolean'],
+    body: 'A <strong>variable</strong> is a named place where a program stores information. Programs use different data types, including text, numbers, and true/false values.',
+    more: 'Variables let a program remember information that may change while it runs. A game might store a player name as text, a score as a number, and whether the game has ended as a true-or-false value. Giving variables meaningful names, such as playerScore instead of x, makes a program easier to read and maintain. Variables are one of the main ways a program keeps track of what is happening.',
+    code: `name = "Nova"
+score = 0
+isGameOver = false`,
+    activity: 'Choose three pieces of information a game needs to remember and give each one a variable name.'
+  },
+  {
+    title: 'Conditions and decisions',
+    goal: 'Use logic to choose between outcomes.',
+    concepts: ['if', 'else', 'condition', 'comparison'],
+    body: 'A condition asks a true-or-false question. Programs use <strong>if</strong> and <strong>else</strong> to make decisions, such as letting a player continue only when they have health left.',
+    more: 'Conditions allow the same program to behave differently in different situations. A game can check whether a player has enough coins to buy an item, whether an answer is correct, or whether an enemy has run out of health. Comparisons such as greater than, less than, or equal to produce true-or-false answers. By combining conditions, programmers can create systems that respond intelligently to choices and changes.',
+    code: `IF score >= 50
+    Display "You passed"
+ELSE
+    Display "Try again"
+END IF`,
+    activity: 'Design a decision that tells a player to take an umbrella when it is raining.'
+  },
+  {
+    title: 'Loops and repetition',
+    goal: 'Repeat instructions efficiently.',
+    concepts: ['loop', 'repeat', 'counter'],
+    body: 'A <strong>loop</strong> repeats an instruction or group of instructions. Instead of writing the same command five times, a loop can perform it automatically.',
+    more: 'Loops are helpful whenever a program needs to do something more than once. A loop can count from one to ten, show every question in a quiz, check every item in an inventory, or move an enemy during each turn of a game. Every loop needs a clear stopping point; otherwise, the program may repeat forever. Learning to identify repeated tasks helps you write shorter, clearer code with fewer mistakes.',
+    code: `FOR number FROM 1 TO 5
+    Display number
+END FOR`,
+    activity: 'Where could a game use a loop? Think about counting coins, moving enemies, or showing questions.'
+  },
+  {
+    title: 'Functions and reusable code',
+    goal: 'Organise useful instructions into reusable pieces.',
+    concepts: ['function', 'method', 'parameter', 'reuse'],
+    body: 'A <strong>function</strong> is a named group of instructions that does one job. Functions avoid repetition and make programs easier to understand and fix.',
+    more: 'Functions are useful when the same task is needed in several places. Instead of copying the same instructions again and again, a programmer can create a function once and call it whenever it is needed. Some functions accept information called parameters, such as a player name or score, so the same function can work with different values. Well-named functions also make code easier to read because their names explain what each part of the program is meant to do.',
+    code: `FUNCTION greetUser(name)
+    Display "Hello " + name
+END FUNCTION
+
+greetUser("Alex")`,
+    activity: 'Name three functions a game might need, such as startGame, showScore, or movePlayer.'
+  },
+  {
+    title: 'Testing and debugging',
+    goal: 'Find and fix mistakes in programs.',
+    concepts: ['test', 'debug', 'syntax error', 'logic error'],
+    body: 'Testing checks whether a program works as expected. Debugging is the process of finding and fixing errors. A syntax error breaks language rules; a logic error runs but gives the wrong result.',
+    more: 'Programmers test code using different inputs and situations, including unusual cases that users might accidentally create. For example, a score system should be tested with zero points, a high score, and unexpected values. Error messages can point to where a problem occurred, but a programmer still needs to read the code carefully and work out the cause. Debugging is normal: even experienced programmers make mistakes and improve their programs by testing them step by step.',
+    activity: 'Imagine a score is meant to increase by 10, but only increases by 1. Is that a syntax error or a logic error? Explain why.'
+  },
+  {
+    title: 'Final project: Smart Morning Routine',
+    goal: 'Use input, decisions, loops and outputs in one algorithm.',
+    concepts: ['input', 'condition', 'loop', 'algorithm'],
+    body: 'Design a Smart Morning Routine algorithm. It should use an input, at least two decisions, a repeated action, and clear outputs. Test it with different situations.',
+    more: 'This project brings together the main ideas from the course. Your routine receives information as input, uses conditions to decide what should happen next, and uses a loop for an action that repeats. You should also test the algorithm with several different situations to make sure it gives sensible results each time. Professional programmers use the same process: plan a system, test it with realistic cases, find weak points, and improve the solution.',
+    code: `START
+Ask: What time is it?
+
+IF time is later than 8:00
+    Display "Get ready quickly"
+ELSE
+    Display "You have extra time"
+END IF
+
+WHILE breakfast is not finished
+    Take another bite
+END WHILE
+
+Ask: Is it raining?
+
+IF answer is yes
+    Display "Take an umbrella"
+ELSE
+    Display "No umbrella needed"
+END IF
+END`,
+    activity: 'Test your routine for an early morning, a late morning, and a rainy morning.',
+    quiz: true
+  }
 ];
 const key='cr.introCoding.done';let active=0;let done=[];try{done=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){done=[]}done=Array.isArray(done)?done:[];const $=id=>document.getElementById(id);
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
