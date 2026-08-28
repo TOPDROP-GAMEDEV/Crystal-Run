@@ -1171,6 +1171,90 @@ function openInventory() {
     document.body.classList.add('theme-' + savedTheme);
   }
 
+  function setupOnboarding() {
+  const tutorialKey = 'cr.onboarding.complete';
+
+  const steps = [
+    {
+      title: 'Welcome to Crystal Run',
+      text: 'Crystal Run teaches Java by helping you build one real game, piece by piece. You will read examples, run code, write your own game features, and collect XP as you progress.'
+    },
+    {
+      title: 'Choose your learning path',
+      text: 'The sidebar contains your Java course levels. If you have never learned coding concepts before, use the Intro to Coding button in the top bar first, then return here when you are ready for Java.'
+    },
+    {
+      title: 'Run every example',
+      text: 'Each section starts with examples. Press Run and make sure the program works. A completed example earns XP and unlocks the next step, so you learn each idea before using it yourself.'
+    },
+    {
+      title: 'Build your game',
+      text: 'After the examples, you reach a build task. Edit the code, press Run to test it, then use Check my build. You should experiment first; the Peek at one solution button is there when you truly need help.'
+    },
+    {
+      title: 'Save progress and ask for help',
+      text: 'Your XP meter opens the Level Pass, Saves protects your work, and Ask opens the Java helper. Your progress is saved in this browser, but downloading a save file is the safest way to keep a copy.'
+    }
+  ];
+
+  const overlay = $('onboarding');
+  const title = $('onboardingTitle');
+  const text = $('onboardingText');
+  const label = $('onboardingStep');
+  const dots = $('onboardingDots');
+  const back = $('onboardingBack');
+  const next = $('onboardingNext');
+  const skip = $('onboardingSkip');
+
+  if (!overlay || !title || !text || !label || !dots || !back || !next || !skip) return;
+  if (store.get(tutorialKey, false)) return;
+
+  let current = 0;
+
+  function finishTutorial() {
+    store.set(tutorialKey, true);
+    overlay.hidden = true;
+  }
+
+  function renderTutorial() {
+      const item = steps[current];
+  
+      label.textContent = 'Step ' + (current + 1) + ' of ' + steps.length;
+      title.textContent = item.title;
+      text.textContent = item.text;
+  
+      dots.innerHTML = steps.map((_, index) =>
+        '<span class="onboarding-dot' + (index === current ? ' active' : '') + '"></span>'
+      ).join('');
+  
+      back.disabled = current === 0;
+      next.textContent = current === steps.length - 1 ? 'Start learning →' : 'Next →';
+    }
+  
+    back.onclick = () => {
+      if (current > 0) {
+        current--;
+        renderTutorial();
+      }
+    };
+  
+    next.onclick = () => {
+      if (current === steps.length - 1) {
+        finishTutorial();
+        return;
+      }
+  
+      current++;
+      renderTutorial();
+    };
+  
+    skip.onclick = finishTutorial;
+  
+    overlay.hidden = false;
+    renderTutorial();
+  }
+  
+  setupOnboarding();
   render();
   autosave();
 })();
