@@ -148,7 +148,78 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function save(){try{localStorage.setItem(key,JSON.stringify(done))}catch(e){}}
 function renderList(){ $('moduleList').innerHTML=modules.map((m,i)=>'<button class="module-button '+(i===active?'active ':'')+(done.includes(i)?'done':'')+'" data-i="'+i+'"><span class="number">'+(done.includes(i)?'✓':i+1)+'</span><span>'+esc(m.title)+'</span></button>').join('');document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{active=Number(b.dataset.i);render()})}
 function quizHtml(){return '<div class="quiz"><h3>Quick check</h3><p>Which concept repeats instructions?</p><button class="option" data-answer="no">A variable</button><button class="option" data-answer="yes">A loop</button><button class="option" data-answer="no">A string</button><p class="quiz-result" id="quizResult"></p></div>'}
-function render(){const m=modules[active];$('lesson').innerHTML='<p class="eyebrow">Module '+(active+1)+' of '+modules.length+'</p><h2>'+esc(m.title)+'</h2><p class="goal">'+esc(m.goal)+'</p>'<p>'+m.body+'</p><p>'+m.more+'</p><div class="concepts">'+m.concepts.map(c=>'<span class="chip">'+esc(c)+'</span>').join('')+'</div>'+(m.code?'<pre class="code">'+esc(m.code)+'</pre>':'')+'<div class="activity"><h3>Try it</h3><p>'+esc(m.activity)+'</p></div>'+(m.quiz?quizHtml():'')+'<div class="actions"><button class="primary complete" id="completeBtn" '+(done.includes(active)?'disabled':'')+'>'+ (done.includes(active)?'Module completed ✓':'Mark module complete')+'</button><span class="status">'+(active===modules.length-1?'Finish this project to complete the course.':'Complete this module to track your progress.')+'</span></div>';const btn=$('completeBtn');btn.onclick=()=>{if(!done.includes(active)){done.push(active);done.sort((a,b)=>a-b);save();render()}};document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-answer]').forEach(x=>x.disabled=true);const yes=b.dataset.answer==='yes';b.classList.add(yes?'correct':'wrong');$('quizResult').textContent=yes?'Correct — a loop repeats instructions.':'Not quite. A loop repeats instructions.'});renderList();const percent=Math.round(done.length/modules.length*100);$('progressTitle').textContent=done.length+' of '+modules.length+' modules complete';$('progressText').textContent=done.length===modules.length?'Course complete — great work!':'Complete a module to save your progress in this browser.';$('progressBar').style.width=percent+'%'}
+function render() {
+  const m = modules[active];
+
+  $('lesson').innerHTML =
+    '<p class="eyebrow">Module ' + (active + 1) + ' of ' + modules.length + '</p>' +
+    '<h2>' + esc(m.title) + '</h2>' +
+    '<p class="goal">' + esc(m.goal) + '</p>' +
+    '<p>' + m.body + '</p>' +
+    '<p>' + m.more + '</p>' +
+    '<div class="concepts">' +
+      m.concepts.map(c => '<span class="chip">' + esc(c) + '</span>').join('') +
+    '</div>' +
+    (m.code ? '<pre class="code">' + esc(m.code) + '</pre>' : '') +
+    '<div class="activity">' +
+      '<h3>Try it</h3>' +
+      '<p>' + esc(m.activity) + '</p>' +
+    '</div>' +
+    (m.quiz ? quizHtml() : '') +
+    '<div class="actions">' +
+      '<button class="primary complete" id="completeBtn" ' +
+        (done.includes(active) ? 'disabled' : '') +
+      '>' +
+        (done.includes(active) ? 'Module completed ✓' : 'Mark module complete') +
+      '</button>' +
+      '<span class="status">' +
+        (active === modules.length - 1
+          ? 'Finish this project to complete the course.'
+          : 'Complete this module to track your progress.') +
+      '</span>' +
+    '</div>';
+
+  const btn = $('completeBtn');
+
+  btn.onclick = () => {
+    if (!done.includes(active)) {
+      done.push(active);
+      done.sort((a, b) => a - b);
+      save();
+      render();
+    }
+  };
+
+  document.querySelectorAll('[data-answer]').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('[data-answer]').forEach(x => {
+        x.disabled = true;
+      });
+
+      const correct = b.dataset.answer === 'yes';
+
+      b.classList.add(correct ? 'correct' : 'wrong');
+
+      $('quizResult').textContent = correct
+        ? 'Correct — a loop repeats instructions.'
+        : 'Not quite. A loop repeats instructions.';
+    };
+  });
+
+  renderList();
+
+  const percent = Math.round((done.length / modules.length) * 100);
+
+  $('progressTitle').textContent =
+    done.length + ' of ' + modules.length + ' modules complete';
+
+  $('progressText').textContent =
+    done.length === modules.length
+      ? 'Course complete — great work!'
+      : 'Complete a module to save your progress in this browser.';
+
+  $('progressBar').style.width = percent + '%';
+}
 $('resetProgress').onclick=()=>{if(confirm('Reset all Introduction to Coding progress?')){done=[];save();active=0;render()}};render();
 })();
 </script>
